@@ -1,7 +1,7 @@
 # Setup
-title: Not Pure Poole
-description: A simple, beautiful, and powerful Jekyll theme for blogs
-url: https://vszhub.github.io
+title: Diancie Huang
+description: A blogs
+url: https://diancieHZX.github.io
 avatar: /avatar.jpeg
 paginate: 5
 permalink: pretty
@@ -29,14 +29,13 @@ exclude:
 
 # Optimize Jekyl SEO Tag
 twitter:
-  username: vszhub
+  username: Diancie
   card: summary
 logo: logo.png
 social:
-  name: Songzi Vong
+  name: Diancie Huang
   links:
-    - https://twitter.com/vszhub
-    - https://github.com/vszhub
+    - https://github.com/diancieHZX
 google_site_verification: xxxxx
 lang: en
 
@@ -54,6 +53,6 @@ sass:
 
 # Specify the author for blog posts
 author:
-  name: Songzi Vong
-  url: https://github.com/vszhub/
-  email: vszhub@gmail.com
+  name: Diancie Huang
+  url: https://github.com/diancieHZX
+  email: a970535491@gmail.com
