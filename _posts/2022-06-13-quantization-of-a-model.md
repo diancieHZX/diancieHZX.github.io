@@ -79,8 +79,40 @@ $$
 
 ##### 4）插入observer和传入qconfig
 
-torch.quantization.prepare() 向子 module 传播 qconfig,并为子 module 插入 observer。 Observer 可以在获取 FP32 activations/weights 的动态范围。
+```
+torch.quantization.prepare() 
+```
+
+向子 module 传播 qconfig,并为子 module 插入 observer。 Observer 可以在获取 FP32 activations/weights 的动态范围。
 
 ##### 6）module转化：
 
-torch.quantization.convert 函数可以将 FP32 module 转化成 int8 module. 这个过程会量化 weights, 计算并存储 activation 的 scale 和 zero_point。
+```
+torch.quantization.convert()
+```
+
+ 函数可以将 FP32 module 转化成 int8 module. 这个过程会量化 weights, 计算并存储 activation 的 scale 和 zero_point。
+
+##### 7) 动态量化（dynamic quantization）：
+
+目前pytorch的动态量化使用
+
+```
+torch.quantization.quantize_dynamic(model, qconfig_spec=None, dtype=torch.qint8, mapping=None, inplace=False)
+```
+
+这个API能将一个Float 类型的模型转换为dynamic quantized 模型，即只有权重weight 被量化的模型。这个API目前仅支持
+
+- Linear
+- LSTM
+- LSTMCell
+- RNNCell
+- GRUCell 
+
+这五种层，因为这些层一般参数量占比很大，量化收益较高。实际上也可能是因为pytorch框架下到1.7为止的量化操作仍处于初始阶段，对于其他算子的支持力度不足，且模型量化在业界目前还没有特别成熟（没有标准的过程）。
+
+### 量化模型的部署问题
+
+本人目前正在完成的项目恰好涉及一个深度学习模型resnet18部署到嵌入式平台上的问题。嵌入式硬件设备的发展程度远远不及目前各种主机平台的，更没有可以利用GPU进行加速的手段，虽然某些厂家也有使用NPU代替GPU对深度学习模型在嵌入式设备上进行支持，然而其发展仍是滞后的。这也显示出深度学习算法在实际业务中落地是一件困难的事情。
+
+pytorch和tensorflow等是目前常用的深度学习模型训练与推理框架，但它们在嵌入式芯片上，尤其是那些为了符合某种特定法规而制造的芯片（如汽车级芯片）往往是无法应用的，因为这些芯片在保证安全性、流畅性的同时舍弃了大量的算力，甚至它们对更高精度的数据类型（比如浮点数）都是不支持的。因此目前在计算机服务器所展现出来性能良好的很多深度学习模型往往无法直接使用在这些嵌入式芯片上，而这些嵌入式芯片又往往都是深度学习模型实际落地最大的一个市场所在。模型量化的提出也有为了解决深度学习模型占用大量运算资源和存储空间而考虑。然而现实是使用pytorch或者tensorflow或者caffe训练的模型最终部署到嵌入式芯片上都需要转化为第三方的中间模型，比如onnx，但这些转化过程目前又较少的考虑了模型量化的操作，致使实际上很多模型量化后的无法转换，又或者转化成功后精度损失很大无法使用。这些都是深度学习模型部署所需要考虑的问题。
